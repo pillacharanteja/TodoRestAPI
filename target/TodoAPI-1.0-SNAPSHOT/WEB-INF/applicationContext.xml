@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd"
+
+>
+    <bean id="properties" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location" value="WEB-INF/props/dbInfo.properties" />
+    </bean>
+    
+
+    <bean id="todoDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="driverClass" value="com.mysql.jdbc.Driver"/>
+        <property name="jdbcUrl" value="${todo.url}"/>
+        <property name="user" value="${todo.username}"/>
+        <property name="password" value="${todo.password}"/> 
+        <property name="acquireIncrement" value="1"/> 
+        <property name="minPoolSize" value="3"/>
+        <property name="maxPoolSize" value="25"/>
+        <property name="maxIdleTime" value="600"/>
+    </bean>
+    
+    <!--
+    FactoryBean that creates a JPA EntityManagerFactory according to JPA's standard container bootstrap contract.
+    This is the most powerful way to set up a shared JPA EntityManagerFactory in a Spring application context; the EntityManagerFactory can then be passed to JPA-based DAOs via dependency injection.
+    Note that switching to a JNDI lookup or to a LocalEntityManagerFactoryBean definition is just a matter of configuration!-->
+    <bean id="entityManagerFactoryBean" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="todoDataSource" />
+        <property name="packagesToScan">
+            <list>
+                <value>com.soulpage</value>
+            </list> 
+        </property>
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+        </property>
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
+                <prop key="hibernate.jdbc.batch_size">50</prop>
+                <!--<prop key="hibernate.generate_statistics">true</prop>-->
+                <prop key="hibernate.format_sql">true</prop>
+                <prop key="hibernate.show_sql">false</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+
+            </props>
+        </property>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactoryBean" />
+    </bean>
+    
+    <!--
+     It used for activating annotations in beans already registered in the application context (no matter whether they were defined with XML or by package scanning).
+     That means it will resolve @Autowired and @Qualifier annotations for the beans which are already created and stored in the spring container.
+    -->
+    <context:annotation-config />
+    
+</beans>

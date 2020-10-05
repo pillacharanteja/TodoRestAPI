@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/mvc
+    http://www.springframework.org/schema/mvc/spring-mvc.xsd
+    http://www.springframework.org/schema/tx
+http://www.springframework.org/schema/tx/spring-tx.xsd
+http://www.springframework.org/schema/aop 
+http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    
+    <!--
+    The declaration in the spring application configuration file would scan the classes inside the specified package and create the beans instance.
+    Note that it could create beans only if that class is annotated with correct annotations. 
+    -->
+    <context:component-scan base-package="com.soulpage"/>
+    
+    <!--
+    It’s used with RequestMappingHandlerMapping class, which executes methods annotated with @RequestMapping.
+    The RequestMappingHandlerMapping is used to maintain the mapping of the request URI to the handler.
+    Once the handler is obtained, the DispatcherServlet dispatches the request to the appropriate handler adapter, which then invokes the handlerMethod().
+    Support for custom argument and return value types can be added via-->
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <property name="messageConverters" ref="jsonMessageConverter" />
+    </bean>    
+
+    <bean id="jsonMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+    </bean>
+    
+    
+    
+    <!--
+    It is used for enabling the Spring MVC components with its default configurations.
+    If you dont include mvc:annotation-driven also your MVC application would work if you have used the context:component-scan for creating the beans or defined the beans in your XML file.
+    But, mvc:annotation-driven does some extra job on configuring the special beans that would not have been configured if you are not using this element in your XML file.
+    This tag would registers the HandlerMapping and HandlerAdapter required to dispatch requests to your @Controllers.
+    -->
+    <mvc:annotation-driven />
+   
+    <!--    Enables support for handling components marked with AspectJ's @Aspect annotation    -->
+    <aop:aspectj-autoproxy/>
+    
+    <!-- enable the configuration of transactional behavior based on annotations -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+     
+     
+</beans>

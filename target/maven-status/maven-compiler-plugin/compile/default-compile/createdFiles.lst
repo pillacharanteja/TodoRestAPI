@@ -1,0 +1,7 @@
+com\soulpage\dao\TodoDAO.class
+com\soulpage\service\TodoServiceImpl.class
+com\soulpage\dao\TodoDaoImpl.class
+com\soulpage\controller\TodoController.class
+com\soulpage\service\TodoService.class
+com\soulpage\todoapi\AppConfiguration.class
+com\soulpage\dto\Todo.class
