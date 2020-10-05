@@ -122,10 +122,11 @@ public class TodoDaoImpl implements TodoDAO {
     @Override
     public boolean updateFavourite(int id, boolean isFavourite) {
         try {
+            System.out.println("updateFavourite()..id.." + id + "..isFavourite.." + isFavourite);
             Query query = entityManager.createNativeQuery("update todo set isFavourite= ? where id=?");
-            query.setParameter(1, isFavourite ? 0 : 1);
+            query.setParameter(1, isFavourite ? 1 : 0);
             query.setParameter(2, id);
-            
+
             if (query.executeUpdate() > 0) {
                 return true;
             }

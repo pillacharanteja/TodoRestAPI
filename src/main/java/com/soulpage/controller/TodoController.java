@@ -109,12 +109,12 @@ public class TodoController {
         }
     }
 
-    @PutMapping("/todos/isFav/{id}")
-    public ResponseEntity<Boolean> updateFavourite(@PathVariable(value = "id") int todoId, HttpServletRequest request) {
+    @PutMapping("/todos/isFav/{id}/{isFavourite}")
+    public ResponseEntity<Boolean> updateFavourite(@PathVariable(value = "id") int todoId, @PathVariable(value = "isFavourite") boolean isFavourite) {
         try {
             System.out.println("In updateFavourite()..");
 //            We can also get DTO by Id and call save method.
-            boolean result = todoService.updateFavourite(todoId, Boolean.parseBoolean(request.getParameter("isFavourite")));
+            boolean result = todoService.updateFavourite(todoId, isFavourite);
             System.out.println("in updateFacourite...resukt" + result);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (Exception e) {
